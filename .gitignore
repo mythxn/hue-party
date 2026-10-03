@@ -1,0 +1,6 @@
+.hue.json
+*.pid
+*.log
+.claude/
+.build/
+__pycache__/
