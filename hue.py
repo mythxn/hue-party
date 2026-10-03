@@ -267,7 +267,16 @@ CYBERPUNK = [
     (255, 0, 140),
 ]
 
-THEMES = {"lava": LAVA, "cyberpunk": CYBERPUNK}
+SPEAKEASY = [
+    (255, 95, 10),    # amber glow of backlit bottles
+    (255, 60, 5),     # deep orange
+    (255, 130, 30),   # whiskey gold
+    (235, 45, 8),     # ember
+    (255, 80, 15),
+    (255, 95, 10),
+]
+
+THEMES = {"lava": LAVA, "cyberpunk": CYBERPUNK, "speakeasy": SPEAKEASY}
 
 
 def lava_at(u, pal=LAVA):
@@ -281,6 +290,7 @@ def cmd_lava(a):
     """Each light wanders on its own slow, unsynced cycle: color blobs that swell and fade."""
     lights = pick(a.names, a.room)
     rnd = __import__("random").Random(7)
+    pins = {k.lower(): hex_rgb(v) for k, v in (p.split("=") for p in a.pin)}
     # per-light: color period, brightness period (seconds), phase offsets
     cfg = [(rnd.uniform(240, 420) * a.slowness, rnd.uniform(150, 300) * a.slowness,
             rnd.random(), rnd.random()) for _ in lights]
@@ -299,7 +309,7 @@ def cmd_lava(a):
             if any(d.lower() in l.name.lower() for d in a.dim):
                 bri *= a.dim_scale
             try:
-                l.set(on=True, bri=bri, rgb=lava_at(u, THEMES[a.theme]), kelvin=2000,
+                l.set(on=True, bri=bri, rgb=next((c for k, c in pins.items() if k in l.name.lower()), None) or lava_at(u, THEMES[a.theme]), kelvin=2000,
                       duration=1500 if first else (a.interval + 2) * 1000)
             except Exception as e:
                 print(f"  {l.name}: {e}", file=sys.stderr)
@@ -363,6 +373,7 @@ def main():
     x.add_argument("--theme", choices=list(THEMES), default="lava")
     x.add_argument("--room"); x.add_argument("--min-brightness", type=float, default=4)
     x.add_argument("--max-brightness", type=float, default=30)
+    x.add_argument("--pin", nargs="*", default=[], metavar="NAME=#HEX", help="hold these lights at a fixed color")
     x.add_argument("--dim", nargs="*", default=[], help="lights (name match) to keep dimmer")
     x.add_argument("--dim-scale", type=float, default=0.35, help="brightness multiplier for --dim lights")
     x.add_argument("--interval", type=float, default=8, help="seconds between updates (default 8)")

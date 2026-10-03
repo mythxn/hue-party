@@ -25,6 +25,6 @@ Pairing saves a key to `.hue.json` (git-ignored; keep it private).
               --slowness 0.3 --interval 4 --dim ceiling
 ```
 
-`lava` gives every light its own unsynced colour and brightness cycle. Themes: `lava`, `cyberpunk`. Use `--room NAME` to limit to a room and `--dim NAME...` to keep some lights dimmer.
+`lava` gives every light its own unsynced colour and brightness cycle. Themes: `lava`, `cyberpunk`, `speakeasy` (dim amber glow; e.g. `--theme speakeasy --max-brightness 32 --slowness 3 --pin accent=#ff1030`). `--pin NAME=#HEX` holds a light at a fixed colour. Use `--room NAME` to limit to a room and `--dim NAME...` to keep some lights dimmer.
 
 Requires macOS's `/usr/bin/python3` or any Python 3.9+ that is allowed on your local network.
